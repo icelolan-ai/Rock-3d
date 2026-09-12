@@ -1,0 +1,35 @@
+{
+  "US-02": {
+    "partId": "US-02",
+    "partName": "LOX Tank (Upper Stage)",
+    "category": "Propulsion - Tankage",
+    "function": "เก็บ Liquid Oxygen สำหรับ Stage 2",
+    "dimensions": {
+      "diameter": 2.5,
+      "height": 3.5,
+      "unit": "m",
+      "status": "estimated"
+    },
+    "material": "Aluminum-Lithium Alloy",
+    "method": "procedural",
+    "parentAssembly": "Upper Stage",
+    "connectedParts": ["US-04", "US-05"]
+  },
+  "PL-02": {
+    "partId": "PL-02",
+    "partName": "Payload Adapter",
+    "category": "Structural",
+    "function": "ถ่ายแรงจาก payload สู่ upper stage",
+    "dimensions": {
+      "topDiameter": 1.5,
+      "baseDiameter": 2.5,
+      "height": 0.8,
+      "unit": "m",
+      "status": "estimated"
+    },
+    "material": "Aluminum Alloy",
+    "method": "procedural",
+    "parentAssembly": "Payload System",
+    "connectedParts": ["PL-01", "US-01"]
+  }
+}
