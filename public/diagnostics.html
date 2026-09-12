@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Pipeline Diagnostics</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+        font-family: -apple-system, system-ui, sans-serif;
+        background: #111;
+        color: #eee;
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      p.sub {
+        color: #999;
+        font-size: 13px;
+        margin-top: 0;
+        margin-bottom: 20px;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        background: #2a6ee0;
+        color: white;
+        font-weight: 600;
+      }
+      button:active {
+        background: #1d54b3;
+      }
+      button:disabled {
+        background: #444;
+        color: #888;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 13px;
+        min-height: 60px;
+      }
+      .status-pass {
+        color: #4ade80;
+      }
+      .status-fail {
+        color: #f87171;
+      }
+      .section {
+        margin-bottom: 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pipeline Diagnostics</h1>
+    <p class="sub">Runs entirely on Cloudflare's edge. Nothing runs on this device — tap a button, wait for the result.</p>
+
+    <div class="section">
+      <button id="btn-meshy">Test Meshy Connection (test mode)</button>
+      <pre id="out-meshy">Not run yet.</pre>
+    </div>
+
+    <div class="section">
+      <button id="btn-r2">Test R2 Upload/Fetch Round-Trip</button>
+      <pre id="out-r2">Not run yet.</pre>
+    </div>
+
+    <script>
+      async function runTest(buttonId, outputId, endpoint) {
+        const button = document.getElementById(buttonId);
+        const output = document.getElementById(outputId);
+        button.disabled = true;
+        output.textContent = "Running...";
+        output.className = "";
+        try {
+          const res = await fetch(endpoint);
+          const data = await res.json();
+          output.textContent = JSON.stringify(data, null, 2);
+          output.className = data.success ? "status-pass" : "status-fail";
+        } catch (err) {
+          output.textContent = "Request failed: " + (err && err.message ? err.message : String(err));
+          output.className = "status-fail";
+        } finally {
+          button.disabled = false;
+        }
+      }
+
+      document.getElementById("btn-meshy").addEventListener("click", () => {
+        runTest("btn-meshy", "out-meshy", "/meshy-test");
+      });
+      document.getElementById("btn-r2").addEventListener("click", () => {
+        runTest("btn-r2", "out-r2", "/r2-selftest");
+      });
+    </script>
+  </body>
+</html>
