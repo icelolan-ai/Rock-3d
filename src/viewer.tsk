@@ -1,0 +1,97 @@
+import { Suspense, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, useGLTF, Environment } from "@react-three/drei";
+
+/**
+ * Minimal proof-of-pipeline viewer. Loads ONE GLB at a time (chosen from a
+ * dropdown) and lets the user rotate/zoom it with touch or mouse.
+ *
+ * This is intentionally bare — no select/explode/part-info UI. Those are
+ * Phase 8-10 scope, not this build.
+ *
+ * GLB source: in this build, GLBs are served directly from the public/
+ * folder root (public/US-02.glb, public/PL-02.glb — Vite serves everything
+ * in public/ at the site root). Once R2 connectivity is verified, this
+ * will point at the public R2 URL instead.
+ */
+
+const AVAILABLE_PARTS = [
+  { id: "US-02", label: "LOX Tank (US-02)", path: "/US-02.glb" },
+  { id: "PL-02", label: "Payload Adapter (PL-02)", path: "/PL-02.glb" },
+];
+
+function Model({ path }: { path: string }) {
+  const { scene } = useGLTF(path);
+  return <primitive object={scene} />;
+}
+
+export default function Viewer() {
+  const [selected, setSelected] = useState(AVAILABLE_PARTS[0]);
+
+  return (
+    <div style={{ width: "100vw", height: "100vh", touchAction: "none" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 12,
+          zIndex: 10,
+          background: "rgba(20,20,20,0.75)",
+          padding: "8px 12px",
+          borderRadius: 6,
+          color: "white",
+          fontFamily: "sans-serif",
+          fontSize: 14,
+        }}
+      >
+        <select
+          value={selected.id}
+          onChange={(e) => {
+            const next = AVAILABLE_PARTS.find((p) => p.id === e.target.value);
+            if (next) setSelected(next);
+          }}
+        >
+          {AVAILABLE_PARTS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          zIndex: 10,
+        }}
+      >
+        <a
+          href="/diagnostics.html"
+          style={{
+            background: "rgba(20,20,20,0.75)",
+            padding: "8px 12px",
+            borderRadius: 6,
+            color: "white",
+            fontFamily: "sans-serif",
+            fontSize: 13,
+            textDecoration: "none",
+          }}
+        >
+          Diagnostics →
+        </a>
+      </div>
+
+      <Canvas camera={{ position: [4, 3, 4], fov: 50 }}>
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[5, 8, 5]} intensity={1.2} />
+        <Suspense fallback={null}>
+          <Model key={selected.id} path={selected.path} />
+          <Environment preset="city" />
+        </Suspense>
+        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+      </Canvas>
+    </div>
+  );
+}
