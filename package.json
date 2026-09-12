@@ -1,0 +1,36 @@
+{
+  "name": "rocket-3d-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:parts": "tsx scripts/generateParts.ts",
+    "validate:parts": "tsx scripts/validateParts.ts",
+    "meshy:test": "tsx scripts/meshyTestCall.ts",
+    "r2:upload": "tsx scripts/r2Upload.ts",
+    "r2:fetch": "tsx scripts/r2Fetch.ts",
+    "typecheck": "tsc --noEmit",
+    "typecheck:functions": "tsc --noEmit -p tsconfig.functions.json",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "three": "^0.169.0",
+    "@react-three/fiber": "^8.17.10",
+    "@react-three/drei": "^9.114.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@aws-sdk/client-s3": "^3.679.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.1",
+    "vite": "^5.4.9",
+    "@vitejs/plugin-react": "^4.3.2",
+    "@types/three": "^0.169.0",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@types/node": "^22.7.5",
+    "@cloudflare/workers-types": "^4.20241004.0"
+  }
+}
